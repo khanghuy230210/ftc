@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Find the card</title>
+
+<!-- Favicon - Logo pixel card -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230f0f1a'/><rect x='10' y='6' width='44' height='52' rx='4' fill='%23f8f1e3' stroke='%23ffd700' stroke-width='3'/><rect x='16' y='12' width='32' height='40' fill='none' stroke='%23d4c4a8' stroke-width='2' stroke-dasharray='3 2'/><text x='32' y='42' font-size='22' text-anchor='middle' fill='%231a1a1a'>🃏</text></svg>">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    image-rendering: pixelated;
+  }
+
+  body {
+    background: #0f0f1a;
+    color: #eee;
+    font-family: 'Press Start 2P', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    user-select: none;
+    position: relative;
+  }
+
+  /* ===== LOADING SCREEN ===== */
+  #loading-screen {
+    position: fixed;
+    inset: 0;
+    background: #0f0f1a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+
+  #loading-screen.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .loading-logo {
+    width: 90px;
+    height: 110px;
+    background: linear-gradient(160deg, #f8f1e3, #e8dcc8);
+    border: 5px solid #ffd700;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    box-shadow: 0 0 0 4px #000, 6px 6px 0 #000;
+    margin-bottom: 28px;
+    animation: logoBounce 1.2s ease-in-out infinite;
+    position: relative;
+  }
+
+  .loading-logo::after {
+    content: "";
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 2px dashed rgba(0,0,0,0.12);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  @keyframes logoBounce {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+  }
+
+  .loading-title {
+    font-size: 14px;
+    color: #ffd700;
+    text-shadow: 3px 3px 0 #000;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+  }
+
+  .loading-bar-container {
+    width: 200px;
+    height: 14px;
+    background: #1a1a2e;
+    border: 3px solid #000;
+    box-shadow: 3px 3px 0 #000;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .loading-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4ecca3, #2dd4bf);
+    transition: width 0.3s ease;
+  }
+
+  .loading-text {
+    margin-top: 16px;
+    font-size: 10px;
+    color: #888;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ===== BACKGROUND ===== */
+  .bg-stars {
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+      radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 50px 160px, #fff, transparent),
+      radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 160px 120px, rgba(255,220,100,0.7), transparent),
+      radial-gradient(1px 1px at 200px 50px, #fff, transparent),
+      radial-gradient(1px 1px at 250px 180px, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 300px 90px, #fff, transparent),
+      radial-gradient(1px 1px at 350px 140px, rgba(255,255,255,0.3), transparent);
+    background-size: 400px 200px;
+    animation: starsMove 60s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @keyframes starsMove {
+    from { background-position: 0 0; }
+    to { background-position: 400px 200px; }
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.12) 2px,
+      rgba(0,0,0,0.12) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  .screen.active {
+    display: flex;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* ===== START SCREEN ===== */
+  #start-screen { gap: 10px; }
+
+  .title-frame {
+    position: relative;
+    padding: 30px 40px;
+    margin-bottom: 20px;
+  }
+
+  .title-frame::before,
+  .title-frame::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 4px solid #ffd700;
+  }
+
+  .title-frame::before {
+    top: 0; left: 0;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .title-frame::after {
+    bottom: 0; right: 0;
+    border-left: none;
+    border-top: none;
+  }
+
+  .corner-tr, .corner-bl {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 4px solid #ffd700;
+  }
+
+  .corner-tr {
+    top: 0; right: 0;
+    border-left: none;
+    border-bottom: none;
+  }
+
+  .corner-bl {
+    bottom: 0; left: 0;
+    border-right: none;
+    border-top: none;
+  }
+
+  /* Logo trên màn hình chính */
+  .game-logo {
+    width: 70px;
+    height: 86px;
+    background: linear-gradient(160deg, #f8f1e3, #e8dcc8);
+    border: 4px solid #ffd700;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    box-shadow: 0 0 0 3px #000, 4px 4px 0 #000;
+    margin: 0 auto 18px;
+    position: relative;
+  }
+
+  .game-logo::after {
+    content: "";
+    position: absolute;
+    top: 6px; left: 6px; right: 6px; bottom: 6px;
+    border: 1.5px dashed rgba(0,0,0,0.1);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  #title {
+    font-size: clamp(26px, 7vw, 48px);
+    color: #ffd700;
+    text-shadow: 
+      4px 4px 0 #000,
+      0 0 20px rgba(255, 215, 0, 0.5);
+    line-height: 1.35;
+    letter-spacing: 2px;
+    animation: titlePulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes titlePulse {
+    0%, 100% { transform: scale(1); text-shadow: 4px 4px 0 #000, 0 0 20px rgba(255,215,0,0.4); }
+    50% { transform: scale(1.03); text-shadow: 4px 4px 0 #000, 0 0 30px rgba(255,215,0,0.7); }
+  }
+
+  .subtitle {
+    font-size: 11px;
+    color: #a0a0c0;
+    margin-top: 12px;
+    letter-spacing: 1px;
+  }
+
+  .version {
+    font-size: 9px;
+    color: #555;
+    margin-top: 8px;
+  }
+
+  .float-icons {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .float-icon {
+    position: absolute;
+    font-size: 28px;
+    opacity: 0.35;
+    animation: floatAround 8s ease-in-out infinite;
+  }
+
+  .float-icon:nth-child(1) { top: 12%; left: 8%; animation-delay: 0s; }
+  .float-icon:nth-child(2) { top: 18%; right: 10%; animation-delay: 1.5s; font-size: 32px; }
+  .float-icon:nth-child(3) { bottom: 20%; left: 12%; animation-delay: 3s; }
+  .float-icon:nth-child(4) { bottom: 15%; right: 8%; animation-delay: 4.5s; font-size: 26px; }
+  .float-icon:nth-child(5) { top: 45%; left: 5%; animation-delay: 2s; font-size: 22px; }
+  .float-icon:nth-child(6) { top: 50%; right: 6%; animation-delay: 5s; }
+
+  @keyframes floatAround {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-12px) rotate(5deg); }
+    50% { transform: translateY(0) rotate(0deg); }
+    75% { transform: translateY(10px) rotate(-5deg); }
+  }
+
+  .btn {
+    background: #4ecca3;
+    border: 4px solid #000;
+    color: #000;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 15px;
+    padding: 16px 36px;
+    cursor: pointer;
+    box-shadow: 6px 6px 0 #000;
+    transition: all 0.12s;
+    margin: 8px;
+    position: relative;
+    z-index: 5;
+  }
+
+  .btn:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 #000;
+    filter: brightness(1.1);
+  }
+
+  .btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 #000;
+  }
+
+  .btn-play {
+    background: linear-gradient(180deg, #5eead4, #2dd4bf);
+    margin-top: 40px;
+    font-size: 18px;
+    padding: 18px 48px;
+    box-shadow: 7px 7px 0 #000, 0 0 15px rgba(45, 212, 191, 0.4);
+  }
+
+  .btn-play:hover {
+    box-shadow: 10px 10px 0 #000, 0 0 25px rgba(45, 212, 191, 0.6);
+  }
+
+  .btn.easy { background: linear-gradient(180deg, #6ee7b7, #34d399); }
+  .btn.medium { background: linear-gradient(180deg, #fcd34d, #f59e0b); }
+  .btn.hard { background: linear-gradient(180deg, #f87171, #ef4444); color: #fff; }
+
+  /* ===== DIFFICULTY ===== */
+  #diff-title {
+    font-size: clamp(16px, 4vw, 22px);
+    margin-bottom: 12px;
+    color: #fff;
+    text-shadow: 3px 3px 0 #000;
+  }
+
+  .diff-desc {
+    font-size: 10px;
+    color: #888;
+    margin-bottom: 36px;
+    max-width: 320px;
+    line-height: 1.6;
+  }
+
+  .diff-btns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .diff-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .diff-icon {
+    font-size: 36px;
+    filter: drop-shadow(2px 2px 0 #000);
+  }
+
+  .diff-label {
+    font-size: 9px;
+    color: #aaa;
+  }
+
+  /* ===== GAME ===== */
+  #game-info {
+    margin-bottom: 28px;
+    font-size: 12px;
+    color: #a0a0c0;
+    text-shadow: 2px 2px 0 #000;
+  }
+
+  #cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    max-width: 920px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    width: 108px;
+    height: 148px;
+    background: linear-gradient(160deg, #f8f1e3, #e8dcc8);
+    border: 5px solid #1a1a1a;
+    border-radius: 6px;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 5px 5px 0 #000, inset 0 0 0 3px #d4c4a8;
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 6px; left: 6px; right: 6px; bottom: 6px;
+    border: 2px dashed rgba(0,0,0,0.08);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  .card:hover {
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 7px 12px 0 #000, inset 0 0 0 3px #d4c4a8;
+  }
+
+  .card.disabled {
+    pointer-events: none;
+    opacity: 0.65;
+  }
+
+  .card-icon {
+    font-size: 48px;
+    line-height: 1;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
+    z-index: 2;
+  }
+
+  /* ===== DEFECTS ===== */
+  .defect-poop::after {
+    content: "💩";
+    position: absolute;
+    font-size: 14px;
+    bottom: 9px;
+    right: 9px;
+    z-index: 3;
+    opacity: 0.9;
+  }
+
+  .defect-wet::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 16px;
+    background: linear-gradient(to bottom, rgba(80,160,255,0.45), transparent);
+    z-index: 3;
+  }
+
+  .defect-bent {
+    transform: rotate(-3.5deg);
+    border-radius: 6px 18px 6px 6px;
+  }
+
+  .defect-bent:hover {
+    transform: rotate(-3.5deg) translateY(-8px) scale(1.04);
+  }
+
+  .defect-color {
+    background: linear-gradient(160deg, #f3e8d0, #e2d4b5) !important;
+  }
+
+  .defect-color .card-icon {
+    filter: hue-rotate(18deg) drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
+  }
+
+  .defect-scratch::after {
+    content: "";
+    position: absolute;
+    width: 28px;
+    height: 2px;
+    background: #3a3a3a;
+    top: 32%;
+    left: 25%;
+    transform: rotate(22deg);
+    z-index: 3;
+    opacity: 0.75;
+  }
+
+  .defect-dirt::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 5px;
+    background: #5a4a3a;
+    border-radius: 50%;
+    bottom: 18px;
+    left: 14px;
+    z-index: 3;
+    opacity: 0.7;
+  }
+
+  .defect-tiny::after {
+    content: "";
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #222;
+    bottom: 13px;
+    right: 15px;
+    z-index: 3;
+  }
+
+  .defect-micro-scratch::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 1.5px;
+    background: #444;
+    top: 38%;
+    left: 30%;
+    transform: rotate(18deg);
+    z-index: 3;
+    opacity: 0.6;
+  }
+
+  .defect-faint-wet::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 11px;
+    background: linear-gradient(to bottom, rgba(90,170,255,0.28), transparent);
+    z-index: 3;
+  }
+
+  .defect-slight-color {
+    background: linear-gradient(160deg, #f6efe0, #e9dcc8) !important;
+  }
+
+  .defect-slight-color .card-icon {
+    filter: hue-rotate(8deg) drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
+  }
+
+  .defect-pixel::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #1a1a1a;
+    top: 22px;
+    right: 18px;
+    z-index: 3;
+  }
+
+  .defect-corner::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-bottom: 2px solid #333;
+    border-right: 2px solid #333;
+    bottom: 8px;
+    right: 8px;
+    z-index: 3;
+    opacity: 0.55;
+  }
+
+  /* Feedback */
+  #feedback {
+    font-size: clamp(14px, 3.5vw, 18px);
+    margin: 18px 0 10px;
+    min-height: 48px;
+    line-height: 1.5;
+    text-shadow: 2px 2px 0 #000;
+    transition: all 0.3s;
+  }
+
+  .correct {
+    color: #4ade80;
+    animation: popIn 0.4s ease;
+  }
+
+  .wrong {
+    color: #f87171;
+    animation: shake 0.4s ease;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.6); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+
+  #again-btn {
+    display: none;
+    margin-top: 12px;
+  }
+
+  .back-link {
+    margin-top: 28px;
+    font-size: 10px;
+    color: #666;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .back-link:hover {
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loading-screen">
+    <div class="loading-logo">🃏</div>
+    <div class="loading-title">FIND THE CARD</div>
+    <div class="loading-bar-container">
+      <div class="loading-bar" id="loading-bar"></div>
+    </div>
+    <div class="loading-text">Đang tải...</div>
+  </div>
+
+  <div class="bg-stars"></div>
+
+  <!-- START SCREEN -->
+  <div id="start-screen" class="screen">
+    <div class="float-icons">
+      <div class="float-icon">🌱</div>
+      <div class="float-icon">🐕</div>
+      <div class="float-icon">🍄</div>
+      <div class="float-icon">🌱</div>
+      <div class="float-icon">🐕</div>
+      <div class="float-icon">🍄</div>
+    </div>
+
+    <div class="title-frame">
+      <div class="corner-tr"></div>
+      <div class="corner-bl"></div>
+      
+      <!-- Logo game -->
+      <div class="game-logo">🃏</div>
+      
+      <h1 id="title">FIND<br>THE CARD</h1>
+      <div class="subtitle">Tìm lá bài khác biệt nhất</div>
+      <div class="version">PIXEL EDITION v2.2</div>
+    </div>
+
+    <button class="btn btn-play" onclick="showDifficulty()">▶ PLAY</button>
+  </div>
+
+  <!-- DIFFICULTY SCREEN -->
+  <div id="difficulty-screen" class="screen">
+    <h2 id="diff-title">CHỌN ĐỘ KHÓ</h2>
+    <p class="diff-desc">Độ khó càng cao → điểm khác biệt càng nhỏ và khó nhìn hơn</p>
+
+    <div class="diff-btns">
+      <div class="diff-card">
+        <div class="diff-icon">🌱</div>
+        <button class="btn easy" onclick="startGame('non')">non</button>
+        <div class="diff-label">3 lá • dễ</div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">🐕</div>
+        <button class="btn medium" onclick="startGame('tuất')">tuất</button>
+        <div class="diff-label">5 lá • khó hơn</div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">🍄</div>
+        <button class="btn hard" onclick="startGame('gỗ xà cừ')">gỗ xà cừ</button>
+        <div class="diff-label">10 lá • rất khó</div>
+      </div>
+    </div>
+
+    <div class="back-link" onclick="showScreen('start-screen')">← quay lại</div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen" class="screen">
+    <div id="game-info"></div>
+    <div id="cards-container"></div>
+    <div id="feedback"></div>
+    <button id="again-btn" class="btn" onclick="showDifficulty()">Chơi lại</button>
+  </div>
+
+<script>
+  // ===== LOADING SCREEN =====
+  function startLoading() {
+    const bar = document.getElementById('loading-bar');
+    const loadingScreen = document.getElementById('loading-screen');
+    let progress = 0;
+
+    const interval = setInterval(() => {
+      progress += Math.random() * 18 + 8;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        bar.style.width = '100%';
+        
+        setTimeout(() => {
+          loadingScreen.classList.add('hide');
+          showScreen('start-screen');
+        }, 400);
+      } else {
+        bar.style.width = progress + '%';
+      }
+    }, 180);
+  }
+
+  // Start loading when page ready
+  window.addEventListener('load', startLoading);
+
+  // ===== GAME LOGIC =====
+  const levels = {
+    "non": {
+      count: 3,
+      icon: "🌱",
+      name: "non",
+      defects: ["poop", "wet", "bent", "color", "scratch", "dirt"]
+    },
+    "tuất": {
+      count: 5,
+      icon: "🐕",
+      name: "tuất",
+      defects: ["scratch", "dirt", "tiny", "micro-scratch", "faint-wet", "slight-color"]
+    },
+    "gỗ xà cừ": {
+      count: 10,
+      icon: "🍄",
+      name: "gỗ xà cừ",
+      defects: ["tiny", "micro-scratch", "faint-wet", "slight-color", "pixel", "corner"]
+    }
+  };
+
+  const wrongMsgs = [
+    "non!",
+    "chơi thua lớp 1",
+    "chỉ thế thôi à😏"
+  ];
+
+  const correctMsgs = [
+    "rùa thôi! rùa thôi!",
+    "ăn hên thôi, giỏi chan tiếp đê"
+  ];
+
+  let currentLevel = null;
+  let correctIndex = -1;
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function showDifficulty() {
+    showScreen('difficulty-screen');
+    document.getElementById('again-btn').style.display = 'none';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('feedback').className = '';
+  }
+
+  function startGame(levelKey) {
+    currentLevel = levels[levelKey];
+    showScreen('game-screen');
+
+    document.getElementById('game-info').textContent = 
+      `Độ khó: ${currentLevel.name.toUpperCase()}  •  Tìm lá bài khác biệt nhất`;
+
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('feedback').className = '';
+    document.getElementById('again-btn').style.display = 'none';
+
+    const container = document.getElementById('cards-container');
+    container.innerHTML = '';
+
+    correctIndex = Math.floor(Math.random() * currentLevel.count);
+    const defectType = currentLevel.defects[
+      Math.floor(Math.random() * currentLevel.defects.length)
+    ];
+
+    for (let i = 0; i < currentLevel.count; i++) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.index = i;
+
+      const icon = document.createElement('div');
+      icon.className = 'card-icon';
+      icon.textContent = currentLevel.icon;
+      card.appendChild(icon);
+
+      if (i === correctIndex) {
+        if (defectType === 'poop') card.classList.add('defect-poop');
+        else if (defectType === 'wet') card.classList.add('defect-wet');
+        else if (defectType === 'bent') card.classList.add('defect-bent');
+        else if (defectType === 'color') card.classList.add('defect-color');
+        else if (defectType === 'scratch') card.classList.add('defect-scratch');
+        else if (defectType === 'dirt') card.classList.add('defect-dirt');
+        else if (defectType === 'tiny') card.classList.add('defect-tiny');
+        else if (defectType === 'micro-scratch') card.classList.add('defect-micro-scratch');
+        else if (defectType === 'faint-wet') card.classList.add('defect-faint-wet');
+        else if (defectType === 'slight-color') card.classList.add('defect-slight-color');
+        else if (defectType === 'pixel') card.classList.add('defect-pixel');
+        else if (defectType === 'corner') card.classList.add('defect-corner');
+      }
+
+      card.addEventListener('click', () => handleClick(i));
+      container.appendChild(card);
+    }
+  }
+
+  function handleClick(index) {
+    document.querySelectorAll('.card').forEach(c => c.classList.add('disabled'));
+
+    const feedback = document.getElementById('feedback');
+    const againBtn = document.getElementById('again-btn');
+
+    if (index === correctIndex) {
+      feedback.textContent = correctMsgs[Math.floor(Math.random() * correctMsgs.length)];
+      feedback.className = 'correct';
+    } else {
+      feedback.textContent = wrongMsgs[Math.floor(Math.random() * wrongMsgs.length)];
+      feedback.className = 'wrong';
+    }
+
+    againBtn.style.display = 'inline-block';
+  }
+</script>
+</body>
+</html>
