@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Find the card</title>
 
-<!-- Favicon - Logo pixel card -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230f0f1a'/><rect x='10' y='6' width='44' height='52' rx='4' fill='%23f8f1e3' stroke='%23ffd700' stroke-width='3'/><rect x='16' y='12' width='32' height='40' fill='none' stroke='%23d4c4a8' stroke-width='2' stroke-dasharray='3 2'/><text x='32' y='42' font-size='22' text-anchor='middle' fill='%231a1a1a'>🃏</text></svg>">
+<!-- Favicon -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230f0f1a'/><rect x='10' y='6' width='44' height='52' rx='4' fill='%23f8f1e3' stroke='%23ffd700' stroke-width='3'/><rect x='16' y='12' width='32' height='40' fill='none' stroke='%23d4c4a8' stroke-width='2' stroke-dasharray='3 2'/><text x='32' y='42' font-size='22' text-anchor='middle' fill='%231a1a1a'>ðŸƒ</text></svg>">
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -227,7 +227,6 @@
     border-top: none;
   }
 
-  /* Logo trên màn hình chính */
   .game-logo {
     width: 70px;
     height: 86px;
@@ -451,131 +450,155 @@
   }
 
   /* ===== DEFECTS ===== */
+
+  /* --- Easy --- */
   .defect-poop::after {
-    content: "💩";
+    content: "ðŸ’©";
     position: absolute;
-    font-size: 14px;
+    font-size: 15px;
     bottom: 9px;
     right: 9px;
     z-index: 3;
-    opacity: 0.9;
   }
 
   .defect-wet::before {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 16px;
-    background: linear-gradient(to bottom, rgba(80,160,255,0.45), transparent);
+    height: 18px;
+    background: linear-gradient(to bottom, rgba(70,150,255,0.55), transparent);
     z-index: 3;
   }
 
   .defect-bent {
-    transform: rotate(-3.5deg);
-    border-radius: 6px 18px 6px 6px;
+    transform: rotate(-4deg);
+    border-radius: 6px 20px 6px 6px;
   }
 
   .defect-bent:hover {
-    transform: rotate(-3.5deg) translateY(-8px) scale(1.04);
+    transform: rotate(-4deg) translateY(-8px) scale(1.04);
   }
 
   .defect-color {
-    background: linear-gradient(160deg, #f3e8d0, #e2d4b5) !important;
+    background: linear-gradient(160deg, #f0e0c0, #d9c9a5) !important;
   }
 
   .defect-color .card-icon {
-    filter: hue-rotate(18deg) drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
+    filter: hue-rotate(22deg) drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
   }
 
   .defect-scratch::after {
     content: "";
     position: absolute;
-    width: 28px;
-    height: 2px;
-    background: #3a3a3a;
-    top: 32%;
-    left: 25%;
-    transform: rotate(22deg);
+    width: 32px;
+    height: 2.5px;
+    background: #333;
+    top: 30%;
+    left: 22%;
+    transform: rotate(24deg);
     z-index: 3;
-    opacity: 0.75;
+    opacity: 0.85;
   }
 
   .defect-dirt::after {
     content: "";
     position: absolute;
-    width: 7px;
-    height: 5px;
-    background: #5a4a3a;
+    width: 8px;
+    height: 6px;
+    background: #5c4a38;
     border-radius: 50%;
-    bottom: 18px;
-    left: 14px;
+    bottom: 16px;
+    left: 13px;
     z-index: 3;
-    opacity: 0.7;
+    opacity: 0.8;
   }
 
+  /* --- Medium --- */
   .defect-tiny::after {
     content: "";
     position: absolute;
-    width: 3px;
-    height: 3px;
-    background: #222;
-    bottom: 13px;
-    right: 15px;
+    width: 4px;
+    height: 4px;
+    background: #1f1f1f;
+    bottom: 14px;
+    right: 14px;
     z-index: 3;
   }
 
   .defect-micro-scratch::after {
     content: "";
     position: absolute;
-    width: 16px;
-    height: 1.5px;
-    background: #444;
-    top: 38%;
-    left: 30%;
-    transform: rotate(18deg);
+    width: 22px;
+    height: 2px;
+    background: #3a3a3a;
+    top: 36%;
+    left: 28%;
+    transform: rotate(19deg);
     z-index: 3;
-    opacity: 0.6;
+    opacity: 0.75;
   }
 
   .defect-faint-wet::before {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 11px;
-    background: linear-gradient(to bottom, rgba(90,170,255,0.28), transparent);
+    height: 14px;
+    background: linear-gradient(to bottom, rgba(80,160,255,0.38), transparent);
     z-index: 3;
   }
 
   .defect-slight-color {
-    background: linear-gradient(160deg, #f6efe0, #e9dcc8) !important;
+    background: linear-gradient(160deg, #f4ead5, #e5d6bc) !important;
   }
 
   .defect-slight-color .card-icon {
-    filter: hue-rotate(8deg) drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
+    filter: hue-rotate(12deg) drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
   }
 
+  /* --- Hard (Ä‘Ã£ tÄƒng Ä‘á»™ rÃµ hÆ¡n má»™t chÃºt) --- */
   .defect-pixel::after {
     content: "";
     position: absolute;
-    width: 2px;
-    height: 2px;
-    background: #1a1a1a;
-    top: 22px;
-    right: 18px;
+    width: 3px;
+    height: 3px;
+    background: #222;
+    top: 20px;
+    right: 16px;
     z-index: 3;
   }
 
   .defect-corner::after {
     content: "";
     position: absolute;
-    width: 6px;
-    height: 6px;
-    border-bottom: 2px solid #333;
-    border-right: 2px solid #333;
-    bottom: 8px;
-    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-bottom: 2.5px solid #2a2a2a;
+    border-right: 2.5px solid #2a2a2a;
+    bottom: 9px;
+    right: 9px;
     z-index: 3;
-    opacity: 0.55;
+    opacity: 0.7;
+  }
+
+  .defect-dot-random::after {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #2a2a2a;
+    border-radius: 50%;
+    z-index: 3;
+  }
+
+  .defect-line-random::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 2px;
+    background: #333;
+    transform: rotate(15deg);
+    z-index: 3;
+    opacity: 0.7;
   }
 
   /* Feedback */
@@ -634,12 +657,12 @@
 
   <!-- LOADING SCREEN -->
   <div id="loading-screen">
-    <div class="loading-logo">🃏</div>
+    <div class="loading-logo">ðŸƒ</div>
     <div class="loading-title">FIND THE CARD</div>
     <div class="loading-bar-container">
       <div class="loading-bar" id="loading-bar"></div>
     </div>
-    <div class="loading-text">Đang tải...</div>
+    <div class="loading-text">Äang táº£i...</div>
   </div>
 
   <div class="bg-stars"></div>
@@ -647,53 +670,52 @@
   <!-- START SCREEN -->
   <div id="start-screen" class="screen">
     <div class="float-icons">
-      <div class="float-icon">🌱</div>
-      <div class="float-icon">🐕</div>
-      <div class="float-icon">🍄</div>
-      <div class="float-icon">🌱</div>
-      <div class="float-icon">🐕</div>
-      <div class="float-icon">🍄</div>
+      <div class="float-icon">ðŸŒ±</div>
+      <div class="float-icon">ðŸ•</div>
+      <div class="float-icon">ðŸ„</div>
+      <div class="float-icon">ðŸŒ±</div>
+      <div class="float-icon">ðŸ•</div>
+      <div class="float-icon">ðŸ„</div>
     </div>
 
     <div class="title-frame">
       <div class="corner-tr"></div>
       <div class="corner-bl"></div>
       
-      <!-- Logo game -->
-      <div class="game-logo">🃏</div>
+      <div class="game-logo">ðŸƒ</div>
       
       <h1 id="title">FIND<br>THE CARD</h1>
-      <div class="subtitle">Tìm lá bài khác biệt nhất</div>
-      <div class="version">PIXEL EDITION v2.2</div>
+      <div class="subtitle">TÃ¬m lÃ¡ bÃ i khÃ¡c biá»‡t nháº¥t</div>
+      <div class="version">PIXEL EDITION v2.3</div>
     </div>
 
-    <button class="btn btn-play" onclick="showDifficulty()">▶ PLAY</button>
+    <button class="btn btn-play" onclick="showDifficulty()">â–¶ PLAY</button>
   </div>
 
   <!-- DIFFICULTY SCREEN -->
   <div id="difficulty-screen" class="screen">
-    <h2 id="diff-title">CHỌN ĐỘ KHÓ</h2>
-    <p class="diff-desc">Độ khó càng cao → điểm khác biệt càng nhỏ và khó nhìn hơn</p>
+    <h2 id="diff-title">CHá»ŒN Äá»˜ KHÃ“</h2>
+    <p class="diff-desc">Äá»™ khÃ³ cÃ ng cao â†’ Ä‘iá»ƒm khÃ¡c biá»‡t cÃ ng nhá» vÃ  khÃ³ nhÃ¬n hÆ¡n</p>
 
     <div class="diff-btns">
       <div class="diff-card">
-        <div class="diff-icon">🌱</div>
+        <div class="diff-icon">ðŸŒ±</div>
         <button class="btn easy" onclick="startGame('non')">non</button>
-        <div class="diff-label">3 lá • dễ</div>
+        <div class="diff-label">3 lÃ¡ â€¢ dá»…</div>
       </div>
       <div class="diff-card">
-        <div class="diff-icon">🐕</div>
-        <button class="btn medium" onclick="startGame('tuất')">tuất</button>
-        <div class="diff-label">5 lá • khó hơn</div>
+        <div class="diff-icon">ðŸ•</div>
+        <button class="btn medium" onclick="startGame('tuáº¥t')">tuáº¥t</button>
+        <div class="diff-label">5 lÃ¡ â€¢ khÃ³ hÆ¡n</div>
       </div>
       <div class="diff-card">
-        <div class="diff-icon">🍄</div>
-        <button class="btn hard" onclick="startGame('gỗ xà cừ')">gỗ xà cừ</button>
-        <div class="diff-label">10 lá • rất khó</div>
+        <div class="diff-icon">ðŸ„</div>
+        <button class="btn hard" onclick="startGame('gá»— xÃ  cá»«')">gá»— xÃ  cá»«</button>
+        <div class="diff-label">10 lÃ¡ â€¢ ráº¥t khÃ³</div>
       </div>
     </div>
 
-    <div class="back-link" onclick="showScreen('start-screen')">← quay lại</div>
+    <div class="back-link" onclick="showScreen('start-screen')">â† quay láº¡i</div>
   </div>
 
   <!-- GAME SCREEN -->
@@ -701,11 +723,11 @@
     <div id="game-info"></div>
     <div id="cards-container"></div>
     <div id="feedback"></div>
-    <button id="again-btn" class="btn" onclick="showDifficulty()">Chơi lại</button>
+    <button id="again-btn" class="btn" onclick="showDifficulty()">ChÆ¡i láº¡i</button>
   </div>
 
 <script>
-  // ===== LOADING SCREEN =====
+  // ===== LOADING =====
   function startLoading() {
     const bar = document.getElementById('loading-bar');
     const loadingScreen = document.getElementById('loading-screen');
@@ -728,40 +750,40 @@
     }, 180);
   }
 
-  // Start loading when page ready
   window.addEventListener('load', startLoading);
 
-  // ===== GAME LOGIC =====
+  // ===== GAME =====
   const levels = {
     "non": {
       count: 3,
-      icon: "🌱",
+      icon: "ðŸŒ±",
       name: "non",
       defects: ["poop", "wet", "bent", "color", "scratch", "dirt"]
     },
-    "tuất": {
+    "tuáº¥t": {
       count: 5,
-      icon: "🐕",
-      name: "tuất",
+      icon: "ðŸ•",
+      name: "tuáº¥t",
       defects: ["scratch", "dirt", "tiny", "micro-scratch", "faint-wet", "slight-color"]
     },
-    "gỗ xà cừ": {
+    "gá»— xÃ  cá»«": {
       count: 10,
-      icon: "🍄",
-      name: "gỗ xà cừ",
-      defects: ["tiny", "micro-scratch", "faint-wet", "slight-color", "pixel", "corner"]
+      icon: "ðŸ„",
+      name: "gá»— xÃ  cá»«",
+      // ÄÃ£ bá» nhá»¯ng cÃ¡i quÃ¡ áº£o, thay báº±ng nhá»¯ng cÃ¡i váº«n khÃ³ nhÆ°ng nhÃ¬n Ä‘Æ°á»£c
+      defects: ["tiny", "micro-scratch", "faint-wet", "slight-color", "pixel", "corner", "dot-random", "line-random"]
     }
   };
 
   const wrongMsgs = [
     "non!",
-    "chơi thua lớp 1",
-    "chỉ thế thôi à😏"
+    "chÆ¡i thua lá»›p 1",
+    "chá»‰ tháº¿ thÃ´i Ã ðŸ˜"
   ];
 
   const correctMsgs = [
-    "rùa thôi! rùa thôi!",
-    "ăn hên thôi, giỏi chan tiếp đê"
+    "rÃ¹a thÃ´i! rÃ¹a thÃ´i!",
+    "Äƒn hÃªn thÃ´i, giá»i chan tiáº¿p Ä‘Ãª"
   ];
 
   let currentLevel = null;
@@ -784,7 +806,7 @@
     showScreen('game-screen');
 
     document.getElementById('game-info').textContent = 
-      `Độ khó: ${currentLevel.name.toUpperCase()}  •  Tìm lá bài khác biệt nhất`;
+      `Äá»™ khÃ³: ${currentLevel.name.toUpperCase()}  â€¢  TÃ¬m lÃ¡ bÃ i khÃ¡c biá»‡t nháº¥t`;
 
     document.getElementById('feedback').textContent = '';
     document.getElementById('feedback').className = '';
@@ -809,6 +831,7 @@
       card.appendChild(icon);
 
       if (i === correctIndex) {
+        // Apply defect
         if (defectType === 'poop') card.classList.add('defect-poop');
         else if (defectType === 'wet') card.classList.add('defect-wet');
         else if (defectType === 'bent') card.classList.add('defect-bent');
@@ -821,6 +844,26 @@
         else if (defectType === 'slight-color') card.classList.add('defect-slight-color');
         else if (defectType === 'pixel') card.classList.add('defect-pixel');
         else if (defectType === 'corner') card.classList.add('defect-corner');
+        else if (defectType === 'dot-random') {
+          card.classList.add('defect-dot-random');
+          // Random position
+          const top = 15 + Math.random() * 60;
+          const left = 15 + Math.random() * 60;
+          card.style.setProperty('--dot-top', top + '%');
+          card.style.setProperty('--dot-left', left + '%');
+          // Apply via style
+          const style = document.createElement('style');
+          style.textContent = `.defect-dot-random::after { top: ${top}%; left: ${left}%; }`;
+          card.appendChild(style);
+        }
+        else if (defectType === 'line-random') {
+          card.classList.add('defect-line-random');
+          const top = 20 + Math.random() * 50;
+          const left = 15 + Math.random() * 50;
+          const style = document.createElement('style');
+          style.textContent = `.defect-line-random::after { top: ${top}%; left: ${left}%; }`;
+          card.appendChild(style);
+        }
       }
 
       card.addEventListener('click', () => handleClick(i));
